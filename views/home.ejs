@@ -98,7 +98,7 @@
             <hr />
             <div class="result">
               <span class="badge">Ready</span>
-              <span class="result-link" id="newUrl">http://localhost:8000/url/<%= id %></span>
+              <span class="result-link" id="newUrl"><%= baseUrl %>/url/<%= id %></span>
               <button class="copy-btn" onclick="copyUrl(this, 'newUrl')">Copy</button>
             </div>
           <% } else { %>
@@ -118,7 +118,7 @@
                 </div>
                 <div class="result">
                   <span class="badge">Link</span>
-                  <span class="result-link" id="url-<%= index %>">http://localhost:8000/url/<%= url.shortID %></span>
+                  <span class="result-link" id="url-<%= index %>"><%= baseUrl %>/url/<%= url.shortID %></span>
                   <button class="copy-btn" onclick="copyUrl(this, 'url-<%= index %>')">Copy</button>
                   <span class="badge">Clicks : <%= url.visitHistory.length %></span>
                 </div>

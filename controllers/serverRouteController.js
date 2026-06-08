@@ -4,14 +4,16 @@ const handleHomeRender = async (req, res) => {
     const allUrls = await URL.find({ createdBy: req.user._id })
     return res.render("home", {
         urls: allUrls,
-        id: req.query.id || null
+        id: req.query.id || null,
+        baseUrl: process.env.BASE_URL || "http://localhost:8000"
     });
 }
 
 const handleHomeRenderAll = async (req, res) => {
     const allUrls = await URL.find({})
     return res.render("home", {
-        urls: allUrls
+        urls: allUrls,
+        baseUrl: process.env.BASE_URL || "http://localhost:8000"
     });
 }
 const handleSignUpRender = async (req, res) => {

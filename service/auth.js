@@ -1,6 +1,5 @@
-// const sessionIdToUserMap = new Map()
 const jwt = require('jsonwebtoken')
-const secretKey = 'habib@qureshi21'
+const secretKey = process.env.JWT_SECRET || 'habib@qureshi21'
 
 const setUser = (user) => {
     const payload = {
