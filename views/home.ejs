@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Url-Shortner</title>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Syne:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+      body { font-family: 'Syne', sans-serif; background: #f5f4f0; min-height: 100vh; width: 100%; display: flex; align-items: center; justify-content: center; padding: 2rem; }
+      .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+        width: 100%;
+        max-width: 640px;
+      }
+      .hero { text-align: center; margin-bottom: 1.5rem; }
+      .hero h1 { font-size: 28px; font-weight: 700; color: #1a1a18; letter-spacing: -0.5px; margin-bottom: 6px; }
+      .hero p { font-size: 14px; color: #888780; }
+      .card { background: #fff; border: 0.5px solid #d3d1c7; border-radius: 12px; padding: 1.5rem; width: 100%; max-width: 560px; margin-top: 1rem; }
+      label { display: block; font-size: 12px; font-weight: 500; color: #888780; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 8px; }
+      .row { display: flex; gap: 10px; }
+      input[type="text"] { flex: 1; min-width: 0; font-family: 'DM Mono', monospace; font-size: 13px; padding: 0 14px; height: 42px; border: 0.5px solid #b4b2a9; border-radius: 8px; background: #f5f4f0; color: #1a1a18; outline: none; }
+      input[type="text"]:focus { border-color: #888780; background: #fff; }
+      button[type="submit"] { height: 42px; padding: 0 20px; font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 500; background: #1a1a18; color: #fff; border: none; border-radius: 8px; cursor: pointer; white-space: nowrap; }
+      hr { border: none; border-top: 0.5px solid #d3d1c7; margin: 1.25rem 0; }
+      .result { display: flex; align-items: center; gap: 12px; background: #f5f4f0; border-radius: 8px; padding: 12px 14px; }
+      .badge { font-size: 10px; font-weight: 500; background: #eaf3de; color: #3b6d11; padding: 3px 8px; border-radius: 99px; white-space: nowrap; }
+      .result-link { font-family: 'DM Mono', monospace; font-size: 13px; color: #185fa5; flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .empty { text-align: center; padding: 1rem 0 0; font-size: 13px; color: #b4b2a9; }
+      .list-title { font-size: 12px; font-weight: 500; color: #888780; text-transform: uppercase; letter-spacing: 0.08em; margin-bottom: 10px; }
+      ul { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 8px; }
+      .url-entry { border: 0.5px solid #d3d1c7; border-radius: 8px; overflow: hidden; }
+      .url-entry .result { border-radius: 0; border-bottom: 0.5px solid #d3d1c7; }
+      .url-entry .result:last-child { border-bottom: none; }
+      .original-url { color: #888780; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+      .copy-btn {
+        font-family: 'Syne', sans-serif; font-size: 10px; font-weight: 500;
+        background: #eaf3de; color: #3b6d11; border: none; border-radius: 99px;
+        padding: 3px 8px; cursor: pointer; white-space: nowrap;
+      }
+      .copy-btn:hover { background: #d4e8c0; }
+      .copy-btn.copied { background: #dbeafe; color: #1e40af; }
+      .logout-btn {
+        font-family: 'Syne', sans-serif; font-size: 13px; font-weight: 500;
+        background: #1a1a18; color: #fff; border: none; border-radius: 8px;
+        cursor: pointer; height: 42px; padding: 0 20px; text-decoration: none;
+        display: inline-flex; align-items: center;
+      }
+      @media (max-width: 640px) {
+        body { padding: 16px; }
+        .container { max-width: 100%; }
+        .hero h1 { font-size: 22px; }
+        .hero p { font-size: 13px; }
+        .card { padding: 16px; }
+        input[type="text"] { font-size: 16px; min-width: 0; width: 100%; }
+        button[type="submit"] { min-width: 100px; }
+        .row { gap: 8px; }
+      }
+    </style>
+    <script>
+      function copyUrl(btn, elId) {
+        const text = document.getElementById(elId).textContent;
+        navigator.clipboard.writeText(text).then(() => {
+          btn.textContent = 'Copied!';
+          btn.classList.add('copied');
+          setTimeout(() => {
+            btn.textContent = 'Copy';
+            btn.classList.remove('copied');
+          }, 2000);
+        });
+      }
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div style="display: flex; justify-content: flex-end; width: 100%;">
+        <a href="/user/logout" class="logout-btn">Logout</a>
+      </div>
+      <div class="hero">
+        <h1>URL Shortener</h1>
+        <p>Paste a long link, get a short one instantly</p>
+      </div>
+
+      <div class="card">
+        <form method="post" action="/url">
+          <label for="url">Your long URL</label>
+          <div class="row">
+            <input type="text" id="url" name="url" placeholder="https://example.com/very/long/url" required />
+            <button type="submit">Shorten</button>
+          </div>
+        </form>
+
+          <% if (locals.id) { %>
+            <hr />
+            <div class="result">
+              <span class="badge">Ready</span>
+              <span class="result-link" id="newUrl">http://localhost:8000/url/<%= id %></span>
+              <button class="copy-btn" onclick="copyUrl(this, 'newUrl')">Copy</button>
+            </div>
+          <% } else { %>
+            <p class="empty">Your shortened link will appear here</p>
+          <% } %>
+      </div>
+
+      <div class="card">
+        <p class="list-title">Shortened URLs</p>
+        <% if (locals.urls && urls.length > 0) { %>
+          <ul>
+            <% urls.forEach((url,index) => { %>
+              <li class="url-entry">
+                <div class="result">
+                  <span class="badge"><%= index +1 %></span>
+                  <span class="original-url"><%= url.redirectURL %></span>
+                </div>
+                <div class="result">
+                  <span class="badge">Link</span>
+                  <span class="result-link" id="url-<%= index %>">http://localhost:8000/url/<%= url.shortID %></span>
+                  <button class="copy-btn" onclick="copyUrl(this, 'url-<%= index %>')">Copy</button>
+                  <span class="badge">Clicks : <%= url.visitHistory.length %></span>
+                </div>
+              </li>
+            <% }); %>
+          </ul>
+        <% } else { %>
+          <p class="empty">No URLs shortened yet</p>
+        <% } %>
+      </div>
+
+    </div>
+  </body>
+</html>
