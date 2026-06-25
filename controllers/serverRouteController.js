@@ -5,7 +5,7 @@ const handleHomeRender = async (req, res) => {
     return res.render("home", {
         urls: allUrls,
         id: req.query.id || null,
-        baseUrl: process.env.BASE_URL || "http://localhost:8000"
+        baseUrl: process.env.BASE_URL || "https://url-shortner-fz1u.onrender.com"
     });
 }
 
@@ -13,7 +13,7 @@ const handleHomeRenderAll = async (req, res) => {
     const allUrls = await URL.find({})
     return res.render("home", {
         urls: allUrls,
-        baseUrl: process.env.BASE_URL || "http://localhost:8000"
+        baseUrl: process.env.BASE_URL || "https://url-shortner-fz1u.onrender.com"
     });
 }
 const handleSignUpRender = async (req, res) => {
